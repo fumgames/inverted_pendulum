@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="pendulum_robot">
+<xacro:property name="radius" value="0.01"/>
+<xacro:property name="len" value="0.5"/>
+<xacro:property name="mass" value="${radius*radius*3.14*len*7800}"/>
+<xacro:property name="len2" value="0.48"/>
+<xacro:property name="mass2" value="${radius*radius*3.14*len2*7800}"/>
+  <link name="base_link"/>
+  <link name="base">
+    <visual>
+      <geometry>
+      <box size=".1 .1 .05"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+  </link>
+  <joint name="root2base" type="prismatic">
+    <parent link="base_link"/>
+    <child link="base"/>
+    <limit effort="1000" lower="-1" upper="1" velocity="0.5"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="pendulum1">
+    <visual>
+      <geometry>
+	<cylinder length="${len}" radius="${radius}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+	<cylinder length="${len}" radius="${radius}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${mass}"/>
+      <inertia ixx="${(1/3)*mass*len*len}" izz="${(1/3)*mass*len*len}" ixy="0" ixz="0" iyy="0" iyz="0"/>
+    </inertial>
+  </link>
+  <link name="pendulum2">
+    <visual>
+      <geometry>
+	<cylinder length="${len}" radius="${radius}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+	<cylinder length="${len2}" radius="${radius}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${mass2}"/>
+      <inertia ixx="${(1/3)*mass*len2*len2}" izz="${(1/3)*mass*len2*len2}" ixy="0" ixz="0" iyy="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="p2base" type="fixed">
+    <parent link="base"/>
+    <child link="pendulum1"/>
+    <origin xyz=".06 0 .25" rpy="0 0 0"/>
+  </joint>
+  <joint name="p2p" type="fixed">
+    <parent link="pendulum1"/>
+    <child link="pendulum2"/>
+    <origin xyz="-.02 0 .48" rpy="0 0 0"/>
+  </joint>
+
+   <link name="world"/>
+
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="blue">
+    <color rgba="0 0 1 1"/>
+  </material>
+
+  <gazebo reference="base">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="base">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  
+  <gazebo reference="base">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+</robot>
